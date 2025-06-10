@@ -26,10 +26,10 @@ const tabla = document.querySelector('#tabla tbody')
                 <td>${persona.id}</td>
                 <td>${persona.nombre}</td>
                 <td>${persona.apellido}</td>
-                <td>${persona.email}</td>
+                <td>${persona.correo}</td>
                 <td>${persona.edad}</td>
                 <td>
-                    <button>Editar</button>
+                    <button onClick="AbrirModalEditar(${persona.id}, '${persona.nombre}', '${persona.apellido}', '${persona.email}', '${persona.edad}')">Editar</button>
                     <button onClick="EliminarRegistro(${persona.id})">Eliminar</button>
                 </td>
             </tr>
@@ -56,6 +56,8 @@ btnAbrirModal.addEventListener("click", () => {
 btnCerrarModal.addEventListener("click", () => {
     modal.close();
 });
+
+
 
 //Agregar nuevo integrante desde formulario
 document.getElementById("frm-agregar").addEventListener("submit", async e => {
@@ -91,10 +93,10 @@ document.getElementById("frm-agregar").addEventListener("submit", async e => {
 });
 
 //Funcion para borrar registros 
-async function EliminarRegistro (){
-    const confirmacion = confirm("¿Realmente deseas borrarlo? S");
+async function EliminarRegistro (id){
+    const confirmacion = confirm("¿Realmente deseas borrarlo?");
 
-    //VAlidamos si el usuario dijo que si desea borr
+    //Validamos si el usuario dijo que si desea borr
     if(confirmacion){
         await fetch(`${API_URL}/${id}`, {method: "DELETE"})
 
@@ -102,3 +104,54 @@ async function EliminarRegistro (){
         obtenerPersonas();
     }
 }
+
+//Proceso para editar un registros 
+const modalEditar = document.getElementById("modal-Editar");
+const btnCerrarEditar = document.getElementById("btnCerrarEditar");
+
+    btnCerrarEditar.addEventListener("Click", ()=>{
+    modalEditar.close(); //Cerrar Modal de Editar
+});
+
+function AbrirModalEditar(ID, nombre, apellido, email, edad){
+    //Se agregan los valores del registro en los input
+    document.getElementById("idEditar").value = ID; 
+    document.getElementById("nombreEditar").value = nombre; 
+    document.getElementById("apellidoEditar").value = apellido; 
+    document.getElementById("correoEditar").value = email; 
+    document.getElementById("edadEditar").value = edad; 
+    
+    //Modal se abre despues de agregar los valores al input
+    modalEditar.showModal(); 
+
+}
+
+document.getElementById("frmEditar").addEventListener("submit", async e =>{
+    e.preventDefault(); //Evita quew el formulario se envie 
+    const id = document.getElementById("idEditar").value
+    const nombre = document.getElementById("nombreEditar").value
+    const apellido = document.getElementById("apellidoEditar").value
+    const correo = document.getElementById("correoEditar").value
+    const edad = document.getElementById("edadEditar").value
+
+    if (!nombre || !apellido || !correo || !edad) {
+        alert("Complete todos los campos");
+        return; //Evite que el codigo se siga ejecutando
+    }
+
+    const respuesta = await fetch(`${API_URL}/${id}`,{
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({nombre, apellido, correo, edad})
+    }); 
+
+    if(respuesta.ok){
+        alert("Registro actualizado con exito");
+        modalEditar.close(); //Cerramos el modal
+        obtenerPersonas(); //Actualizamos la lista
+    }
+    else{
+        alert("Hubo un error al actualizar");
+    }
+
+});

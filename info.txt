@@ -4,17 +4,25 @@ HTTP method endpoints
 
 GET
 /OxLuc9/data 	https://retoolapi.dev/OxLuc9/data
+
 GET filter
 /OxLuc9/data?nombre=value	https://retoolapi.dev/OxLuc9/data?nombre=value
+
 GET by id
 /OxLuc9/data/1		https://retoolapi.dev/OxLuc9/data/1
+
 GET paginate
 /OxLuc9/data?_page=2&_limit=10		https://retoolapi.dev/OxLuc9/data?_page=2&_limit=10
+
 POST
 /OxLuc9/data
+
 PUT
 /OxLuc9/data/1
+
 PATCH
 /OxLuc9/data/1
+
+
 DELETE
 /OxLuc9/data/1
